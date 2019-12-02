@@ -118,21 +118,26 @@ object ScalaColours {
 
   case object WhiteBackgroundBright extends Console("\u001b[0;107m")
 
-
   def unapply(c: Console) = Some(c.code)
 
-  def set(modes: Console*)(n: => Unit) = modes.map((m: Console) => {
-    System.out.print(m.code)
+  def set(modes: Console*)(n: => Unit) = {
+    val codes: String = modes.foldLeft(Reset.code)((a: String, b: Console) => s"${a}${b.code}")
+
+    System.out.print(codes)
     n
-    System.out.print(Reset)
-  })
+    System.out.print(Reset.code)
+
+  }
+  def _red = set(Red) _
+  def _yellowBackground = set(YellowBackground) _
+  def _BlackBoldBright = set(BlackBoldBright) _
+
 }
 
 
 object sctest extends App{
-
   import moorhouse.sam.ScalaColours._
-  set(BlueBackgroundBright){
-    print("hello world")
+    set(RedBold, BlueBackgroundBright){
+      print("hello")
   }
 }
